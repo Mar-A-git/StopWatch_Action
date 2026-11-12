@@ -193,7 +193,45 @@ void begin() {
   }
 }
 
-void drawIdle(bool linked, int8_t rssiAvg, int recvPerSec) {
+// 電池マーク＋「72%」を、(cx, cy) を中心に描く
+static void drawBattery(int cx, int cy, int level, bool charging) {
+  if (level < 0) return;
+  if (level > 100) level = 100;
+  const uint32_t col = level <= 20 ? BAT_RED : (level <= 50 ? BAT_YELLOW : BAT_GREEN);
+  const uint16_t c = spr.color888(ch(col, 16), ch(col, 8), ch(col, 0));
+
+  char text[8];
+  snprintf(text, sizeof(text), "%d%%", level);
+  spr.setFont(&fonts::lgfxJapanGothic_20);
+  const int gap = 8;
+  const int iconW = BAT_ICON_W + 4;  // 右の出っ張りを含む
+  const int total = iconW + gap + spr.textWidth(text);
+  const int x0 = cx - total / 2;
+  const int y0 = cy - BAT_ICON_H / 2;
+
+  // 外枠と右の出っ張り
+  spr.drawRoundRect(x0, y0, BAT_ICON_W, BAT_ICON_H, 3, TFT_WHITE);
+  spr.drawRoundRect(x0 + 1, y0 + 1, BAT_ICON_W - 2, BAT_ICON_H - 2, 2, TFT_WHITE);
+  spr.fillRect(x0 + BAT_ICON_W, y0 + BAT_ICON_H / 2 - 3, 3, 6, TFT_WHITE);
+  // 中身（残量に合わせた長さ）
+  const int innerW = BAT_ICON_W - 6;
+  const int w = innerW * level / 100;
+  if (w > 0) spr.fillRect(x0 + 3, y0 + 3, w, BAT_ICON_H - 6, c);
+  // 充電中は稲妻
+  if (charging) {
+    const int bx = x0 + BAT_ICON_W / 2;
+    const int by = cy;
+    spr.fillTriangle(bx + 2, by - 9, bx - 5, by + 1, bx + 1, by + 1, TFT_WHITE);
+    spr.fillTriangle(bx - 2, by + 9, bx + 5, by - 1, bx - 1, by - 1, TFT_WHITE);
+  }
+
+  spr.setTextDatum(middle_left);
+  spr.setTextColor(c);
+  spr.drawString(text, x0 + iconW + gap, cy);
+  spr.setTextDatum(middle_center);
+}
+
+void drawIdle(bool linked, int8_t rssiAvg, int recvPerSec, int batteryLevel, bool charging) {
   spr.fillScreen(TFT_BLACK);
 
   // 外周の輪: 受信レベルの色（開始のしきい値より強いとオレンジ）
@@ -232,6 +270,8 @@ void drawIdle(bool linked, int8_t rssiAvg, int recvPerSec) {
   spr.setTextDatum(middle_center);
   spr.setTextColor(TFT_WHITE);
   spr.drawString(IS_PARENT ? "ボタンAで開始" : "親機に合わせて光る", CX, 340);
+
+  drawBattery(CX, BAT_Y, batteryLevel, charging);
 
   spr.pushSprite(0, 0);
 }

@@ -215,7 +215,19 @@ void loop() {
     brightNow = br;
   }
 
-  if (phase == PH_IDLE) effect::drawIdle(radio::linked(), radio::rssiAvg(), radio::recvPerSec());
+  // 電池の残量（起動直後と、BAT_READ_MS ごとに読む）
+  static int batLevel = -1;
+  static bool batCharging = false;
+  static uint32_t batReadMs = 0;
+  if (batLevel < 0 || now - batReadMs >= BAT_READ_MS) {
+    batLevel = M5.Power.getBatteryLevel();
+    batCharging = M5.Power.isCharging() == m5::Power_Class::is_charging;
+    batReadMs = now;
+    Serial.printf("[BAT] %d%% %s\n", batLevel, batCharging ? "(charging)" : "");
+  }
+
+  if (phase == PH_IDLE)
+    effect::drawIdle(radio::linked(), radio::rssiAvg(), radio::recvPerSec(), batLevel, batCharging);
   else effect::drawPhase(phase, t);
 
   // 1秒ごとのログ（描画の速さも見る）

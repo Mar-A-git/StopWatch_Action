@@ -62,6 +62,15 @@ static constexpr uint32_t COL_CYAN        = 0x40D8FF;
 static constexpr uint32_t COL_GRAY        = 0x707070;
 static constexpr uint32_t COL_DARK        = 0x303030;
 
+// ---- 電池の残量（待機画面の下に出す。①が始まったら消える）----
+static constexpr int      BAT_Y       = 400;       // 行の中心のY（外周の輪の内側に収まる高さ）
+static constexpr int      BAT_ICON_W  = 32;        // 電池マークの大きさ
+static constexpr int      BAT_ICON_H  = 16;
+static constexpr uint32_t BAT_READ_MS = 60000;     // 残量を読む間隔（起動直後にも1回読む）
+static constexpr uint32_t BAT_GREEN   = 0x34C759;  // 50% より多い
+static constexpr uint32_t BAT_YELLOW  = 0xFFCC00;  // 50% 以下
+static constexpr uint32_t BAT_RED     = 0xFF3B30;  // 20% 以下
+
 // ---- 振動（0〜255）----
 // 弱すぎるとモーターが回らない。170〜230 くらいが目安
 static constexpr uint8_t  VIB_KA   = 120;
