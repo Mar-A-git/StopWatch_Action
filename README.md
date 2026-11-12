@@ -1,6 +1,6 @@
 # StopWatch_Action
 
-M5Stack StopWatch を体に着けて、アクションで遊ぶためのファームウェア集。
+M5Stack StopWatch を手に着けて、アクションで遊ぶためのファームウェア集。
 
 | フォルダ | 内容 |
 |---|---|
