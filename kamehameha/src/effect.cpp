@@ -130,7 +130,7 @@ void buildFirePalette(float bright, uint32_t t) {
 
 // ⑤ の光の粒: 中心から外へ飛び散る
 void drawSparksOut(int count, uint32_t t) {
-  const uint16_t col = spr.color888(ch(COL_FIRE_SPARK, 16), ch(COL_FIRE_SPARK, 8), ch(COL_FIRE_SPARK, 0));
+  const uint16_t col = spr.color565(ch(COL_FIRE_SPARK, 16), ch(COL_FIRE_SPARK, 8), ch(COL_FIRE_SPARK, 0));
   for (int i = 0; i < count; i++) {
     const uint32_t off = hash(i * 13 + 5) % FIRE_SPARK_TRIP_MS;
     const uint32_t tt = t + off;
@@ -198,7 +198,7 @@ static void drawBattery(int cx, int cy, int level, bool charging) {
   if (level < 0) return;
   if (level > 100) level = 100;
   const uint32_t col = level <= 20 ? BAT_RED : (level <= 50 ? BAT_YELLOW : BAT_GREEN);
-  const uint16_t c = spr.color888(ch(col, 16), ch(col, 8), ch(col, 0));
+  const uint16_t c = spr.color565(ch(col, 16), ch(col, 8), ch(col, 0));
 
   char text[8];
   snprintf(text, sizeof(text), "%d%%", level);
