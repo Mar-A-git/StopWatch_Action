@@ -4,3 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 __pycache__/
+
+# Wi-Fi の設定（パスワード）は絶対に上げない
+**/include/secrets.h
+__pycache__/
